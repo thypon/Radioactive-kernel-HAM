@@ -1,6 +1,7 @@
 /*
  * Common SMP CPU bringup/teardown functions
  */
+<<<<<<< HEAD
 #include <linux/cpu.h>
 #include <linux/err.h>
 #include <linux/smp.h>
@@ -311,3 +312,16 @@ void smpboot_unregister_percpu_thread(struct smp_hotplug_thread *plug_thread)
 	put_online_cpus();
 }
 EXPORT_SYMBOL_GPL(smpboot_unregister_percpu_thread);
+=======
+#include <linux/init.h>
+
+#include "smpboot.h"
+
+/**
+ * smpboot_prepare - generic smpboot preparation
+ */
+int __cpuinit smpboot_prepare(unsigned int cpu)
+{
+	return 0;
+}
+>>>>>>> 322d621... smp: Add generic smpboot facility

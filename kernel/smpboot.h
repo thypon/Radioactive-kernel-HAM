@@ -1,6 +1,7 @@
 #ifndef SMPBOOT_H
 #define SMPBOOT_H
 
+<<<<<<< HEAD
 struct task_struct;
 
 int smpboot_prepare(unsigned int cpu);
@@ -19,4 +20,8 @@ int smpboot_create_threads(unsigned int cpu);
 void smpboot_park_threads(unsigned int cpu);
 void smpboot_unpark_threads(unsigned int cpu);
 
+=======
+int smpboot_prepare(unsigned int cpu);
+
+>>>>>>> 322d621... smp: Add generic smpboot facility
 #endif
