@@ -533,7 +533,7 @@ static void insert_kthread_work(struct kthread_worker *worker,
 	lockdep_assert_held(&worker->lock);
 
 	list_add_tail(&work->node, pos);
-	work->worker = worker;
+	work->queue_seq++;
 	if (likely(worker->task))
 		wake_up_process(worker->task);
 }
@@ -608,10 +608,11 @@ retry:
 	else
 		noop = true;
 
-	spin_unlock_irq(&worker->lock);
-
-	if (!noop)
-		wait_for_completion(&fwork.done);
+	/*
+	 * rmb flush-b1 paired with worker-b0, to make sure our caller
+	 * sees every change made by work->func().
+	 */
+	smp_mb__after_atomic_dec();
 }
 EXPORT_SYMBOL_GPL(flush_kthread_work);
 
