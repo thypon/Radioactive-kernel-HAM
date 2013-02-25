@@ -244,8 +244,6 @@ static unsigned int freq_to_above_hispeed_delay(unsigned int freq)
 		;
 
 	ret = above_hispeed_delay[i];
-	ret = (ret > (1 * USEC_PER_MSEC)) ? (ret - (1 * USEC_PER_MSEC)) : ret;
-
 	spin_unlock_irqrestore(&above_hispeed_delay_lock, flags);
 	return ret;
 }
@@ -459,7 +457,7 @@ static void cpufreq_interactive_timer(unsigned long data)
 	if (pcpu->target_freq >= hispeed_freq &&
 	    new_freq > pcpu->target_freq &&
 	    now - pcpu->hispeed_validate_time <
-	    freq_to_above_hispeed_delay(pcpu->target_freq)) {
+	    freq_to_above_hispeed_delay(pcpu->policy->cur)) {
 		trace_cpufreq_interactive_notyet(
 			data, cpu_load, pcpu->target_freq,
 			pcpu->policy->cur, new_freq);
@@ -751,26 +749,29 @@ static unsigned int *get_tokenized_data(const char *buf, int *num_tokens)
 	int i;
 	int ntokens = 1;
 	unsigned int *tokenized_data;
-	int err = -EINVAL;
 
 	cp = buf;
 	while ((cp = strpbrk(cp + 1, " :")))
 		ntokens++;
 
-	if (!(ntokens & 0x1))
+	if (!(ntokens & 0x1)) {
+		tokenized_data = ERR_PTR(-EINVAL);
 		goto err;
+	}
 
 	tokenized_data = kmalloc(ntokens * sizeof(unsigned int), GFP_KERNEL);
 	if (!tokenized_data) {
-		err = -ENOMEM;
+		tokenized_data = ERR_PTR(-ENOMEM);
 		goto err;
 	}
 
 	cp = buf;
 	i = 0;
 	while (i < ntokens) {
-		if (sscanf(cp, "%u", &tokenized_data[i++]) != 1)
+		if (sscanf(cp, "%u", &tokenized_data[i++]) != 1) {
+			tokenized_data = ERR_PTR(-EINVAL);
 			goto err_kfree;
+		}
 
 		cp = strpbrk(cp, " :");
 		if (!cp)
@@ -778,16 +779,16 @@ static unsigned int *get_tokenized_data(const char *buf, int *num_tokens)
 		cp++;
 	}
 
-	if (i != ntokens)
+	if (i != ntokens) {
+		tokenized_data = ERR_PTR(-EINVAL);
 		goto err_kfree;
-
+	}
 	*num_tokens = ntokens;
 	return tokenized_data;
 
 err_kfree:
 	kfree(tokenized_data);
 err:
-	return ERR_PTR(err);
 }
 
 static ssize_t show_target_loads(
@@ -847,7 +848,6 @@ static ssize_t show_above_hispeed_delay(
 		ret += sprintf(buf + ret, "%u%s", above_hispeed_delay[i],
 			       i & 0x1 ? ":" : " ");
 
-	--ret;
 	ret += sprintf(buf + ret, "\n");
 	spin_unlock_irqrestore(&above_hispeed_delay_lock, flags);
 	return ret;
