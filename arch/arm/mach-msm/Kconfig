@@ -3051,11 +3051,19 @@ config HAS_MACH_MEMUTILS
 	help
 	Faster memcpy performance for Krait
 
+<<<<<<< HEAD
 config MSM_SECBOOT
 	default n
 	bool "MSM Secboot verification driver"
 	help
 	Driver to expose secureboot status
+=======
+config PVS_LEVEL_INTERFACE
+	bool "Expose PVS level information in sys fs (Boeffla-Kernel)"
+	help
+	 Allow PVS level to be shown in Boeffla-Config app
+
+>>>>>>> cfccd5e... clock-krait-8974: Expose PVS level via sysfs
 endif
 
 config KERNEL_TEXT_MPU_PROT
