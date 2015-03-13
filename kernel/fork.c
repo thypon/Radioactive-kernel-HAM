@@ -320,6 +320,9 @@ static struct task_struct *dup_task_struct(struct task_struct *orig)
 #ifdef CONFIG_ANDROID_LMK_ADJ_RBTREE
 	RB_CLEAR_NODE(&tsk->adj_node);
 #endif
+
+	RB_CLEAR_NODE(&tsk->adj_node);
+
 	return tsk;
 
 out:
