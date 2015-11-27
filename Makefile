@@ -244,12 +244,10 @@ CONFIG_SHELL := $(shell if [ -x "$$BASH" ]; then echo $$BASH; \
 	  else if [ -x /bin/bash ]; then echo /bin/bash; \
 	  else echo sh; fi ; fi)
 
-GRAPHITE = -fgraphite -fgraphite-identity -floop-interchange -ftree-loop-distribution -floop-strip-mine -floop-block -ftree-loop-linear -floop-nest-optimize
-
 HOSTCC       = $(CCACHE) gcc
 HOSTCXX      = $(CCACHE) g++
-HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O3 -fgcse-las -flto -fomit-frame-pointer -pthread $(GRAPHITE)
-HOSTCXXFLAGS = -DNDEBUG -pipe -O3 -flto=4 -Wno-unused $(GRAPHITE)
+HOSTCFLAGS = -Wall -Wmissing-prototypes -Wstrict-prototypes -Ofast -fomit-frame-pointer -floop-flatten -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block -fgcse-las
+HOSTCXXFLAGS = -Ofast -floop-flatten -floop-parallelize-all -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block -fgcse-las
 
 # Decide whether to build built-in, modular, or both.
 # Normally, just do built-in.
@@ -578,6 +576,8 @@ all: vmlinux
 
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 KBUILD_CFLAGS	+= -Os $(call cc-disable-warning,maybe-uninitialized,)
+else
+KBUILD_CFLAGS	+= -Ofast -fmodulo-sched -fmodulo-sched-allow-regmoves -fno-tree-vectorize -fno-inline-functions
 endif
 ifdef CONFIG_CC_OPTIMIZE_DEFAULT
 KBUILD_CFLAGS += -O2
