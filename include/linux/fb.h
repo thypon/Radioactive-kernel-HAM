@@ -554,6 +554,8 @@ struct fb_cursor_user {
 #define FB_EVENT_FB_UNBIND              0x0E
 /*      CONSOLE-SPECIFIC: remap all consoles to new fb - for vga switcheroo */
 #define FB_EVENT_REMAP_ALL_CONSOLE      0x0F
+/*      when 0x09 event happend notify TP        */
+#define FB_EVENT_TP_BLANK                0x10
 
 struct fb_event {
 	struct fb_info *info;
