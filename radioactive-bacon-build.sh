@@ -15,8 +15,8 @@ DTBIMAGE="dtb"
 DEFCONFIG="radioactive_defconfig"
 
 # Kernel Details
-BASE_RADIOACTIVE_VER="OrdenKrieger_"
-VER="NOUGAT_V1.0-test"
+BASE_RADIOACTIVE_VER="Nuclear"
+VER="_V1"
 RADIOACTIVE_VER="$BASE_RADIOACTIVE_VER$VER"
 
 # Vars
