@@ -3070,7 +3070,6 @@ config PVS_LEVEL_INTERFACE
 	help
 	 Allow PVS level to be shown in Boeffla-Config app
 
-endif
 
 config MSM_LIMITER
 		bool "MSM Frequency Limiter Driver"
