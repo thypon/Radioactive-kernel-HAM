@@ -535,13 +535,7 @@ static void cpufreq_interactive_idle_start(void)
 	struct cpufreq_interactive_cpuinfo *pcpu =
 		&per_cpu(cpuinfo, smp_processor_id());
 	int pending;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 	int cpu = pcpu->policy->cpu;
->>>>>>> 9c4f2b7... cpufreq: interactive: Reset floor_validate_time if busy at max for 100ms
-=======
->>>>>>> c046906... cpufreq: interactive: Remove trace event from idle_start handler
 	u64 now;
 
 	if (!down_read_trylock(&pcpu->enable_sem))
@@ -570,14 +564,6 @@ static void cpufreq_interactive_idle_start(void)
 				(now - pcpu->hispeed_validate_time) >
 							MIN_BUSY_TIME) {
 				pcpu->floor_validate_time = now;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-				trace_cpufreq_interactive_idle_start(cpu,
-					pcpu->target_freq, pcpu->policy->cur);
->>>>>>> 9c4f2b7... cpufreq: interactive: Reset floor_validate_time if busy at max for 100ms
-=======
->>>>>>> c046906... cpufreq: interactive: Remove trace event from idle_start handler
 			}
 
 		}
