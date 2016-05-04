@@ -38,18 +38,10 @@
 
 #ifdef CONFIG_BATTERY_BQ27530
 #define SUPPORT_QPNP_VBUS_OVP
+#endif
 
 #ifdef CONFIG_FORCE_FAST_CHARGE
 #include <linux/fastchg.h>
-#endif
-
-#ifdef CONFIG_MACH_MSM8974_14001
-/* zuoyonghua@oneplus.cn 2015-02-13 default close log */
-//#define DEBUG_QPNP_CHARGER
-#ifndef DEBUG_QPNP_CHARGER
-#ifdef pr_info
-#undef pr_info
-#define pr_info(fmt, ...) pr_debug(fmt, ##__VA_ARGS__)
 #endif
 
 /* Interrupt offsets */
