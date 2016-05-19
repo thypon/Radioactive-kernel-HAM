@@ -16,24 +16,23 @@ DEFCONFIG="radioactive_defconfig"
 
 # Kernel Details
 BASE_RADIOACTIVE_VER="RADIOACTIVE_"
-VER="KERNEL_V1.25"
+VER="KERNEL_V1.3"
 RADIOACTIVE_VER="$BASE_RADIOACTIVE_VER$VER"
 
 # Vars
 export LOCALVERSION=~`echo $RADIOACTIVE_VER`
-export CROSS_COMPILE=${HOME}/Android/toolchains/linaro4.8/bin/arm-eabi-
+export CROSS_COMPILE=${HOME}/Android/toolchains/ubertc-5.3/bin/arm-eabi-
 export ARCH=arm
 export SUBARCH=arm
-export KBUILD_BUILD_USER=R.Cuenca
-export KBUILD_BUILD_HOST=acuicultor
+export KBUILD_BUILD_USER=${USER}
+export KBUILD_BUILD_HOST=${HOST}
 
 # Paths
 KERNEL_DIR=`pwd`
-REPACK_DIR="${HOME}/Android/AK-OnePone-AnyKernel2"
-PATCH_DIR="${HOME}/Android/AK-OnePone-AnyKernel2/patch"
-MODULES_DIR="${HOME}/Android/AK-OnePone-AnyKernel2/modules"
+REPACK_DIR="${HOME}/Android/Radioactive"
+MODULES_DIR="${HOME}/Android/Radioactive/modules"
 ZIP_MOVE="${HOME}/Android/ZUK"
-ZIMAGE_DIR="${HOME}/Android/AK-OnePone-AnyKernel2"
+ZIMAGE_DIR="${HOME}/Android/Radioactive"
 
 # Functions
 function clean_all {
@@ -70,7 +69,6 @@ function make_zip {
 		mv  `echo $RADIOACTIVE_VER`.zip $ZIP_MOVE
 		cd $KERNEL_DIR
 }
-
 
 DATE_START=$(date +"%s")
 
