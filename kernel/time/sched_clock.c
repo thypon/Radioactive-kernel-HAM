@@ -15,13 +15,12 @@
 #include <linux/syscore_ops.h>
 #include <linux/hrtimer.h>
 #include <linux/sched_clock.h>
-#include <linux/seqlock.h>
 
 struct clock_data {
 	ktime_t wrap_kt;
 	u64 epoch_ns;
 	u32 epoch_cyc;
-	seqcount_t seq;
+	u32 epoch_cyc_copy;
 	unsigned long rate;
 	u32 mult;
 	u32 shift;
@@ -56,17 +55,23 @@ static unsigned long long notrace cyc_to_sched_clock(u32 cyc, u32 mask)
 {
 	u64 epoch_ns;
 	u32 epoch_cyc;
-	u32 cyc;
-	unsigned long seq;
 
 	if (cd.suspended)
 		return cd.epoch_ns;
 
+	/*
+	 * Load the epoch_cyc and epoch_ns atomically.  We do this by
+	 * ensuring that we always write epoch_cyc, epoch_ns and
+	 * epoch_cyc_copy in strict order, and read them in strict order.
+	 * If epoch_cyc and epoch_cyc_copy are not equal, then we're in
+	 * the middle of an update, and we should repeat the load.
+	 */
 	do {
-		seq = read_seqcount_begin(&cd.seq);
 		epoch_cyc = cd.epoch_cyc;
+		smp_rmb();
 		epoch_ns = cd.epoch_ns;
-	} while (read_seqcount_retry(&cd.seq, seq));
+		smp_rmb();
+	} while (epoch_cyc != cd.epoch_cyc_copy);
 
 	cyc = read_sched_clock();
 	cyc = (cyc - epoch_cyc) & sched_clock_mask;
@@ -86,12 +91,16 @@ static void notrace update_sched_clock(void)
 	ns = cd.epoch_ns +
 		cyc_to_ns((cyc - cd.epoch_cyc) & sched_clock_mask,
 			  cd.mult, cd.shift);
-
+	/*
+	 * Write epoch_cyc and epoch_ns in a way that the update is
+	 * detectable in cyc_to_fixed_sched_clock().
+	 */
 	raw_local_irq_save(flags);
-	write_seqcount_begin(&cd.seq);
+	cd.epoch_cyc_copy = cyc;
+	smp_wmb();
 	cd.epoch_ns = ns;
+	smp_wmb();
 	cd.epoch_cyc = cyc;
-	write_seqcount_end(&cd.seq);
 	raw_local_irq_restore(flags);
 }
 
@@ -197,7 +206,7 @@ static int sched_clock_suspend(void)
 static void sched_clock_resume(void)
 {
 	cd.epoch_cyc = read_sched_clock();
-	hrtimer_start(&sched_clock_timer, cd.wrap_kt, HRTIMER_MODE_REL);
+	cd.epoch_cyc_copy = cd.epoch_cyc;
 	cd.suspended = false;
 }
 
