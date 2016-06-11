@@ -1164,6 +1164,7 @@ qpnp_chg_vinmin_set(struct qpnp_chg_chip *chip, int voltage)
 			chip->chgr_base + CHGR_VIN_MIN,
 			QPNP_CHG_VINMIN_MASK, temp, 1);
 }
+#endif
 
 static int
 qpnp_chg_vinmin_get(struct qpnp_chg_chip *chip)
