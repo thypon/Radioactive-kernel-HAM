@@ -21,7 +21,8 @@ RADIOACTIVE_VER="$BASE_RADIOACTIVE_VER$VER"
 
 # Vars
 export LOCALVERSION=~`echo $RADIOACTIVE_VER`
-export CROSS_COMPILE=${HOME}/Android/toolchains/linaro4.8/bin/arm-eabi-
+#export CROSS_COMPILE=${HOME}/Android/toolchains/linaro4.8/bin/arm-eabi-
+export CROSS_COMPILE=/opt/dev/sc/rom/Bliss/prebuilts/gcc/linux-x86/arm/arm-eabi-7.0-sm/bin/arm-eabi-
 export ARCH=arm
 export SUBARCH=arm
 export KBUILD_BUILD_USER=${USER}
@@ -32,7 +33,9 @@ KERNEL_DIR=`pwd`
 REPACK_DIR="${HOME}/Android/Radioactive"
 MODULES_DIR="${HOME}/Android/Radioactive/modules"
 ZIP_MOVE="${HOME}/Android/ZUK"
-ZIMAGE_DIR="${HOME}/Android/Radioactive"
+#ZIMAGE_DIR="${HOME}/Android/Radioactive"
+ZIMAGE_DIR="arch/arm/boot"
+
 
 # Functions
 function clean_all {
