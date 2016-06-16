@@ -21,8 +21,7 @@ RADIOACTIVE_VER="$BASE_RADIOACTIVE_VER$VER"
 
 # Vars
 export LOCALVERSION=~`echo $RADIOACTIVE_VER`
-#export CROSS_COMPILE=${HOME}/Android/toolchains/linaro4.8/bin/arm-eabi-
-export CROSS_COMPILE=/opt/dev/sc/rom/Bliss/prebuilts/gcc/linux-x86/arm/arm-eabi-7.0-sm/bin/arm-eabi-
+export CROSS_COMPILE=${HOME}/Android/toolchains/linaro4.8/bin/arm-eabi-
 export ARCH=arm
 export SUBARCH=arm
 export KBUILD_BUILD_USER=${USER}
