@@ -16,8 +16,10 @@
 
 #include <linux/of.h>
 #include <linux/sysfs.h>
+#include <linux/workqueue.h>
 
 #include "mdss_dsi.h"
+#include "mdss_fb.h"
 
 #define MAX_PRESETS 10
 
@@ -53,7 +55,16 @@ struct mdss_livedisplay_ctx {
 	unsigned int num_presets;
 	unsigned int caps;
 
+	uint32_t r, g, b;
+
+	struct msm_fb_data_type *mfd;
+
 	struct mutex lock;
+	struct work_struct update_work;
+	struct workqueue_struct *wq;
+
+	uint32_t updated;
+	uint8_t *cmd_buf;
 };
 
 enum {
@@ -78,11 +89,28 @@ enum {
 	MODE_AUTO_CONTRAST	= 0x04,
 	MODE_COLOR_ENHANCE	= 0x08,
 	MODE_PRESET		= 0x10,
+	MODE_RGB		= 0x20,
 	MODE_UPDATE_ALL		= 0xFF,
 };
 
-int mdss_livedisplay_update(struct mdss_dsi_ctrl_pdata *ctrl_pdata, int types);
+void mdss_livedisplay_update(struct mdss_livedisplay_ctx *mlc, uint32_t updated);
 int mdss_livedisplay_parse_dt(struct device_node *np, struct mdss_panel_info *pinfo);
 int mdss_livedisplay_create_sysfs(struct msm_fb_data_type *mfd);
+
+static inline bool is_cabc_cmd(uint32_t value)
+{
+    return (value & MODE_CABC) || (value & MODE_SRE) || (value & MODE_AUTO_CONTRAST);
+}
+
+static inline struct mdss_livedisplay_ctx* get_ctx(struct msm_fb_data_type *mfd)
+{
+    return mfd->panel_info->livedisplay;
+}
+
+static inline struct mdss_dsi_ctrl_pdata* get_ctrl(struct msm_fb_data_type *mfd)
+{
+    struct mdss_panel_data *pdata = dev_get_platdata(&mfd->pdev->dev);
+    return container_of(pdata, struct mdss_dsi_ctrl_pdata, panel_data);
+}
 
 #endif
