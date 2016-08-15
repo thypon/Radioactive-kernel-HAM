@@ -29,15 +29,13 @@ export KBUILD_BUILD_HOST=${HOST}
 
 # Paths
 KERNEL_DIR=`pwd`
-REPACK_DIR="${HOME}/Android/Radioactive"
-MODULES_DIR="${HOME}/Android/Radioactive/modules"
-ZIP_MOVE="${HOME}/Android/ZUK"
-ZIMAGE_DIR="${HOME}/Android/Radioactive"
+MODULES_DIR="${KERNEL_DIR}/modules"
+ZIP_MOVE="${KERNEL_DIR}/zip"
 
 # Functions
 function clean_all {
 		rm -rf $MODULES_DIR/*
-		cd $REPACK_DIR
+		cd $KERNEL_DIR
 		rm -rf $KERNEL
 		rm -rf $DTBIMAGE
 		git reset --hard > /dev/null 2>&1
@@ -51,7 +49,7 @@ function make_kernel {
 		echo
 		make $DEFCONFIG
 		make $THREAD
-		cp -vr $ZIMAGE_DIR/$KERNEL $REPACK_DIR
+		cp -vr $KERNEL_DIR/$KERNEL $KERNEL_DIR
 }
 
 function make_modules {
@@ -60,11 +58,11 @@ function make_modules {
 }
 
 function make_dtb {
-		$REPACK_DIR/tools/dtbToolCM -2 -o $REPACK_DIR/$DTBIMAGE -s 2048 -p scripts/dtc/ arch/arm/boot/
+		$KERNEL_DIR/tools/dtbToolCM -2 -o $KERNEL_DIR/$DTBIMAGE -s 2048 -p scripts/dtc/ arch/arm/boot/
 }
 
 function make_zip {
-		cd $REPACK_DIR
+		cd $KERNEL_DIR
 		zip -r9 `echo $RADIOACTIVE_VER`.zip *
 		mv  `echo $RADIOACTIVE_VER`.zip $ZIP_MOVE
 		cd $KERNEL_DIR
@@ -119,7 +117,7 @@ echo
 while read -p "Do you want to build kernel (y/n)? " dchoice
 do
 case "$dchoice" in
-	y|Y)
+	y|Y )
 		make_kernel
 		make_dtb
 		make_modules
@@ -147,4 +145,3 @@ DATE_END=$(date +"%s")
 DIFF=$(($DATE_END - $DATE_START))
 echo "Time: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
 echo
-
