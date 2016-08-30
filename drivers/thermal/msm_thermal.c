@@ -3471,7 +3471,6 @@ int __init msm_thermal_late_init(void)
 	alarm_init(&thermal_rtc, ANDROID_ALARM_ELAPSED_REALTIME_WAKEUP,
 			thermal_rtc_callback);
 	INIT_WORK(&timer_work, timer_work_fn);
-	msm_thermal_add_timer_nodes();
 
 	msm_thermal_add_stat_nodes();
 	interrupt_mode_init();
