@@ -16,12 +16,12 @@ DEFCONFIG="radioactive_defconfig"
 
 # Kernel Details
 BASE_RADIOACTIVE_VER="RADIOACTIVE_"
-VER="REBORN_V2.22"
+VER="REBORN_V2.25"
 RADIOACTIVE_VER="$BASE_RADIOACTIVE_VER$VER"
 
 # Vars
 export LOCALVERSION=~`echo $RADIOACTIVE_VER`
-export CROSS_COMPILE=${HOME}/Android/toolchains/uber5.2-cortex-a15/bin/arm-eabi-
+export CROSS_COMPILE=${HOME}/Android/toolchains/sm7/bin/arm-eabi-
 export ARCH=arm
 export SUBARCH=arm
 export KBUILD_BUILD_USER=${USER}
