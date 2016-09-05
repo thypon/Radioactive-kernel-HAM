@@ -321,8 +321,8 @@ typedef struct {
 	//struct work_struct poll_work;
     struct work_struct input_report_work;
     struct workqueue_struct *fpc1020_wq;
-    u8 report_key;
-    u8 wakeup_status;
+    int report_key;
+	u8 wakeup;
 	bool down;
 #endif
 
